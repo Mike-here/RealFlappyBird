@@ -1,4 +1,4 @@
-import pygame
+import pygame # type: ignore
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -24,12 +24,13 @@ last_pipe = pygame.time.get_ticks() - pipe_freg
 #load images
 background = pygame.image.load("background-day.png")
 base = pygame.image.load("base.png")
-pipe = pygame.image.load("pipe-red.png")
+
 
 #creating the bird
 class Bird(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
+
         #creating a list of 3 static bird images to make it look like flipping fast
         self.images = []
         self.index = 0
@@ -47,16 +48,16 @@ class Bird(pygame.sprite.Sprite):
         #gravity aspect
         if flying == True:
             self.vel += 0.2
-            if self.vel > 5:
-                self.vel = 5
-            print(self.vel)
+            if self.vel > 4:
+                self.vel = 4
+            
             if self.rect.bottom <= 490:
                 self.rect.y += int(self.vel)
 
         if game_over == False:
             #jumping
             if pygame.mouse.get_pressed()[0] == 1:
-                self.vel -= 0.82   
+                self.vel -= 0.62   
             
 
             #controlling the animation.
@@ -76,9 +77,9 @@ class Bird(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.images[self.index], -90)
 
 class Pipe(pygame.sprite.Sprite):
-    def __init__(self, x , y, position):
+    def __init__(self, x, y, position):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("pipe-red.png")
+        self.image = pygame.image.load("pipe-green.png")
         self.rect = self.image.get_rect()
         #position 1 is up and -1 is down
         if position == 1:
@@ -110,8 +111,10 @@ while run:
 
     bird_group.draw(screen)
     bird_group.update()
+
     pipe_group.draw(screen)
     pipe_group.update()
+
 
     #display the scrolling base.
     screen.blit(base, (base_scroll,490))
@@ -128,7 +131,8 @@ while run:
             pipe_top = Pipe(screen_width, int(screen_height / 2), 1)
             pipe_group.add(pipe_btm)
             pipe_group.add(pipe_top)
-            last_pipe - time_now
+            last_pipe = time_now
+            
 
         #make sure the base scrolls well   
         base_scroll -= scroll_speed
