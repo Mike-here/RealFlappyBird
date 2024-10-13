@@ -13,6 +13,12 @@ screen_height = 603
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("The Real Flappy Bird")
 
+#define font
+font = pygame.font.SysFont("dejavusans", 40)
+
+#define text_color
+black = (200, 200, 200)
+
 # game variables
 base_scroll = 0
 scroll_speed = 2
@@ -28,6 +34,10 @@ pass_pipe = False
 background = pygame.image.load("background-day.png")
 base = pygame.image.load("base.png")
 
+#draw the scores from text.
+def draw_text(text, font, text_color, x, y):
+    score_img = font.render(text, True, text_color)
+    screen.blit(score_img, (x, y))                        #display the score image on the screen.
 
 #creating the bird
 class Bird(pygame.sprite.Sprite):
@@ -131,7 +141,7 @@ while run:
             if bird_group.sprites()[0].rect.left > pipe_group.sprites()[0].rect.right:
                 score += 1
                 pass_pipe = False
-    print(score)
+    draw_text(str(score), font, black, int(screen_width / 2), 20)           
 
     # check if it collides or move above the top level
     if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
