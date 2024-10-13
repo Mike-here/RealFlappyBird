@@ -1,4 +1,4 @@
-import pygame # type: ignore
+import pygame 
 import random
 
 pygame.init()
@@ -33,6 +33,14 @@ pass_pipe = False
 #load images
 background = pygame.image.load("background-day.png")
 base = pygame.image.load("base.png")
+restart_img = pygame.image.load("restart.jpg")
+
+def reset_game():
+    pipe_group.empty()
+    flappy.rect.x = 30
+    flappy.rect.y = int(screen_height / 2)
+    score = 0
+    return score
 
 #draw the scores from text.
 def draw_text(text, font, text_color, x, y):
@@ -44,7 +52,7 @@ class Bird(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
 
-        #creating a list of 3 static bird images to make it look like flipping fast
+        #creating a list of 3 static bird images to make it look like it's flapping fast
         self.images = []
         self.index = 0
         self.counter = 0
@@ -106,6 +114,28 @@ class Pipe(pygame.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
 
+class Restart():
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.topright = (x, y)
+
+    # draw the restart button
+    def draw(self):
+        action = False
+        #get the position of the mouse
+        pos = pygame.mouse.get_pos()
+
+        #check if mouse is over the restart button
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1:
+                action = True
+
+        screen.blit(self.image,  (self.rect.x, self.rect.y))
+         
+        return action 
+        
+
 
 #objects grouping.
 bird_group = pygame.sprite.Group()
@@ -114,6 +144,9 @@ pipe_group = pygame.sprite.Group()
 flappy = Bird(30, int(screen_height / 2))
 
 bird_group.add(flappy)
+
+#create the restart button 
+restart = Restart(screen_width // 2 + 75, screen_height // 2 - 100, restart_img)
 
 # loop
 run = True
@@ -169,6 +202,12 @@ while run:
             base_scroll = 0
 
         pipe_group.update()      
+
+    #check for gameover and restart
+    if game_over == True:
+        if restart.draw() == True:
+            game_over = False
+            score = reset_game()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
