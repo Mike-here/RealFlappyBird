@@ -14,10 +14,10 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("The Real Flappy Bird")
 
 #define font
-font = pygame.font.SysFont("dejavusans", 40)
+font = pygame.font.SysFont("freesans 78", 30)
 
 #define text_color
-black = (200, 200, 200)
+black = (250, 250, 250)
 
 # game variables
 base_scroll = 0
