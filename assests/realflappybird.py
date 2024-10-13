@@ -1,11 +1,12 @@
 import pygame # type: ignore
+import random
 
 pygame.init()
 clock = pygame.time.Clock()
 fps = 60
 
 #screen sizes
-screen_width = 292
+screen_width = 400
 screen_height = 603
 
 
@@ -17,9 +18,11 @@ base_scroll = 0
 scroll_speed = 2
 flying = False
 game_over = False
-pipe_distance = 100
-pipe_freg = 959            #milliseconds
+pipe_distance = 120
+pipe_freg = 1500            #milliseconds
 last_pipe = pygame.time.get_ticks() - pipe_freg
+score = 0
+pass_pipe = False
 
 #load images
 background = pygame.image.load("background-day.png")
@@ -90,6 +93,8 @@ class Pipe(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x -= scroll_speed
+        if self.rect.right < 0:
+            self.kill()
 
 
 #objects grouping.
@@ -113,22 +118,36 @@ while run:
     bird_group.update()
 
     pipe_group.draw(screen)
-    pipe_group.update()
-
-
+    
     #display the scrolling base.
     screen.blit(base, (base_scroll,490))
 
-    if flappy.rect.bottom > 490:
+    #check the score
+    if len(pipe_group) > 0:
+        if bird_group.sprites()[0].rect.left > pipe_group.sprites()[0].rect.left\
+            and bird_group.sprites()[0].rect.right < pipe_group.sprites()[0].rect.right and pass_pipe == False:
+            pass_pipe = True
+        if pass_pipe == True:
+            if bird_group.sprites()[0].rect.left > pipe_group.sprites()[0].rect.right:
+                score += 1
+                pass_pipe = False
+    print(score)
+
+    # check if it collides or move above the top level
+    if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
+        game_over = True
+
+    if flappy.rect.bottom >= 490:
         game_over = True
         flying = False
 
-    if game_over == False:
+    if game_over == False and flying == True:
         #generate new pipes.
         time_now = pygame.time.get_ticks()
         if time_now - last_pipe > pipe_freg:
-            pipe_btm = Pipe(screen_width, int(screen_height / 2), -1)
-            pipe_top = Pipe(screen_width, int(screen_height / 2), 1)
+            pipe_height = random.randint(-85, 85)
+            pipe_btm = Pipe(screen_width, int(screen_height / 2) + pipe_height, -1)
+            pipe_top = Pipe(screen_width, int(screen_height / 2) + pipe_height, 1)
             pipe_group.add(pipe_btm)
             pipe_group.add(pipe_top)
             last_pipe = time_now
@@ -136,8 +155,10 @@ while run:
 
         #make sure the base scrolls well   
         base_scroll -= scroll_speed
-        if abs(base_scroll) > 46:
+        if abs(base_scroll) > 53.8:
             base_scroll = 0
+
+        pipe_group.update()      
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
