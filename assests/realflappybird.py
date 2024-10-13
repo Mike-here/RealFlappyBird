@@ -121,7 +121,6 @@ while run:
         flying = False
 
     if game_over == False:
-
         #generate new pipes.
         time_now = pygame.time.get_ticks()
         if time_now - last_pipe > pipe_freg:
@@ -131,7 +130,7 @@ while run:
             pipe_group.add(pipe_top)
             last_pipe - time_now
 
-         #make sure the base scrolls well   
+        #make sure the base scrolls well   
         base_scroll -= scroll_speed
         if abs(base_scroll) > 46:
             base_scroll = 0
