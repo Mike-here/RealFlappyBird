@@ -35,6 +35,9 @@ background = pygame.image.load("background-day.png")
 base = pygame.image.load("base.png")
 restart_img = pygame.image.load("restart.jpg")
 
+
+
+
 def reset_game():
     pipe_group.empty()
     flappy.rect.x = 30
@@ -78,7 +81,8 @@ class Bird(pygame.sprite.Sprite):
         if game_over == False:
             #jumping
             if pygame.mouse.get_pressed()[0] == 1:
-                self.vel -= 0.62   
+                self.vel -= 0.62
+
             
 
             #controlling the animation.
@@ -100,7 +104,7 @@ class Bird(pygame.sprite.Sprite):
 class Pipe(pygame.sprite.Sprite):
     def __init__(self, x, y, position):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("pipe-green.png")
+        self.image = pygame.image.load("pipe-red.png")
         self.rect = self.image.get_rect()
         #position 1 is up and -1 is down
         if position == 1:
@@ -114,7 +118,7 @@ class Pipe(pygame.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
 
-class Restart():
+class RestartButton():
     def __init__(self, x, y, image):
         self.image = image
         self.rect = self.image.get_rect()
@@ -146,7 +150,7 @@ flappy = Bird(30, int(screen_height / 2))
 bird_group.add(flappy)
 
 #create the restart button 
-restart = Restart(screen_width // 2 + 75, screen_height // 2 - 100, restart_img)
+restart = RestartButton(screen_width // 2 + 75, screen_height // 2 - 100, restart_img)
 
 # loop
 run = True
@@ -212,8 +216,10 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        if event.type == pygame.MOUSEBUTTONDOWN and flying == False and game_over == False:
-            flying = True    
+        if (event.type == pygame.MOUSEBUTTONDOWN or (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE)) and flying == False and game_over == False:
+            flying = True  
+    
+                      
 
     pygame.display.update()        
 
